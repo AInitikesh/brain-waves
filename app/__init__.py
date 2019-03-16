@@ -4,6 +4,7 @@ from flask import request
 from app.helper.converter import insertDb
 import os
 from flask_cors import CORS
+import datetime 
 
 
 # Import SQLAlchemy
@@ -41,8 +42,10 @@ def index():
     ## get the last date the webscraper was ru
     size = request.args.get('size')
     page = request.args.get('page')
-    tradeDate = request.args.get('trade')
-    setllDate = request.args.get('settl')
+    tradeDateFrom = request.args.get('tradeFrom')
+    tradeDateTo = request.args.get('tradeTo')
+    setllDateFrom = request.args.get('settlFrom')
+    setllDateTo = request.args.get('settlTo')
     currency = request.args.get('currency')
     rate = request.args.get('rate')
     status = request.args.get('status')
@@ -51,15 +54,54 @@ def index():
     if status != None and status != "":
         return_data=[data for data in final_data if data[3] == status or data[3] == "MERGED"]
     
-    if tradeDate != None and tradeDate != "":
-        dateSplit = tradeDate.split('-')
-        dateSplit = "/".join([dateSplit[2], dateSplit[1], dateSplit[0]])
-        return_data=[data for data in return_data if data[0]['30T'] == dateSplit or data[1]['30T'] == dateSplit]
+    if tradeDateFrom != None and tradeDateFrom != "":
+        dateSplit = tradeDateFrom.split('-')
+        d1 = datetime.datetime(int(dateSplit[0]), int(dateSplit[1]), int(dateSplit[2]))
+        temp_return = []
+        for data in return_data:
+            dataDate = data[0]['30T'].split('/')
+            if len(dataDate) == 3:
+                d2 = datetime.datetime(int(dataDate[2]), int(dataDate[1]), int(dataDate[0]))
+                if d1 < d2:
+                    temp_return.append(data)
+        return_data = temp_return
 
-    if setllDate != None and setllDate != "":
-        dateSplit = setllDate.split('-')
-        dateSplit = "/".join([dateSplit[2], dateSplit[1], dateSplit[0]])
-        return_data=[data for data in return_data if data[0]['30V'] == dateSplit or data[1]['30V'] == dateSplit]
+    if tradeDateTo != None and tradeDateTo != "":
+        dateSplit = tradeDateTo.split('-')
+        d1 = datetime.datetime(int(dateSplit[0]), int(dateSplit[1]), int(dateSplit[2]))
+        temp_return = []
+        for data in return_data:
+            dataDate = data[0]['30T'].split('/')
+            if len(dataDate) == 3:
+                d2 = datetime.datetime(int(dataDate[2]), int(dataDate[1]), int(dataDate[0]))
+                if d2 < d1:
+                    temp_return.append(data)
+        return_data = temp_return
+
+    if setllDateFrom != None and setllDateFrom != "":
+        dateSplit = setllDateFrom.split('-')
+        d1 = datetime.datetime(int(dateSplit[0]), int(dateSplit[1]), int(dateSplit[2]))
+        temp_return = []
+        for data in return_data:
+            dataDate = data[0]['30V'].split('/')
+            if len(dataDate) == 3:
+                d2 = datetime.datetime(int(dataDate[2]), int(dataDate[1]), int(dataDate[0]))
+                if d1 < d2:
+                    temp_return.append(data)
+        return_data = temp_return
+
+    if setllDateTo != None and setllDateTo != "":
+        dateSplit = setllDateTo.split('-')
+        d1 = datetime.datetime(int(dateSplit[0]), int(dateSplit[1]), int(dateSplit[2]))
+        temp_return = []
+        for data in return_data:
+            dataDate = data[0]['30V'].split('/')
+            if len(dataDate) == 3:
+                d2 = datetime.datetime(int(dataDate[2]), int(dataDate[1]), int(dataDate[0]))
+                if d2 < d1:
+                    temp_return.append(data)
+        return_data = temp_return
+
 
     if rate != None and rate != "":
         return_data=[data for data in return_data if data[0]['36'] == rate or data[1]['36'] == dateSplit]

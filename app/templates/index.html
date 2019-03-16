@@ -22,8 +22,10 @@
     </nav>
     <div id="tableApp" style="margin-top: 40px" class="container">
         <form>
-            <div class="form-group"><label>Trade Date</label><input v-model="tradeDate" class="form-control" type="date"></div>
-            <div class="form-group"><label>Settlement Date</label><input v-model="settlDate" class="form-control" type="date"></div>
+            <label><strong>Trade Date</strong></label>
+            <div class="form-group"><label>From</label><input v-model="tradeDateFrom" class="form-control" type="date"><label style="margin-top:20px">To</label><input v-model="tradeDateTo" class="form-control" type="date"></div>
+            <label><strong>Settlement Date</strong></label>
+            <div class="form-group"><label>From</label><input v-model="settlDateFrom" class="form-control" type="date"><label style="margin-top:20px">To</label><input v-model="settlDateTo" class="form-control" type="date"></div>
             <div class="form-group"><input v-model="currency" class="form-control" type="number" placeholder=" Currency"></div>
             <div class="form-group">
                 <div class="form-check"><input v-model="picked" class="form-check-input" type="radio" name="match" id="UNMATCH" value="UNMATCH"><label class="form-check-label" for="formCheck-1">Unmatched</label></div>

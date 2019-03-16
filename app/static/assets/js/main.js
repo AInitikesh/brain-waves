@@ -3,8 +3,10 @@ var tableApp = new Vue({
   delimiters: ['[[',']]'],
   data: {
     rows: [],
-    tradeDate: "",
-    settlDate: "",
+    tradeDateFrom: "",
+    tradeDateTo: "",
+    settlDateFrom: "",
+    settlDateTo: "",
     currency: "",
     picked: "",
     rate: "",
@@ -20,7 +22,7 @@ var tableApp = new Vue({
     methods: {
       handleSearch: function(event){
         tableApp.rows = []
-        $.getJSON( "/results", { status : this.picked, trade: this.tradeDate, settl : this.settlDate, currency : this.currency , rate: this.rate},function( data ) {
+        $.getJSON( "/results", { status : this.picked, tradeFrom: this.tradeDateFrom, tradeTo: this.tradeDateTo, settlFrom : this.settlDateFrom, settlTo : this.settlDateTo, currency : this.currency , rate: this.rate,},function( data ) {
           $.each( data, function( key, val ) {
             tableApp.rows.push( val);
           });
@@ -29,7 +31,7 @@ var tableApp = new Vue({
       next: function(){
         this.page += 1
         tableApp.rows = []
-        $.getJSON( "/results", { status : this.picked, trade: this.tradeDate, settl : this.settlDate, currency : this.currency , rate: this.rate, page: this.page},function( data ) {
+        $.getJSON( "/results", { status : this.picked, tradeFrom: this.tradeDateFrom, tradeTo: this.tradeDateTo, settlFrom : this.settlDateFrom, settlTo : this.settlDateTo, currency : this.currency , rate: this.rate, page: this.page},function( data ) {
           $.each( data, function( key, val ) {
             tableApp.rows.push( val);
           });
