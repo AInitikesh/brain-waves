@@ -3,8 +3,8 @@ import os
 def insertDb(client, otherParty):
     clientMessages = os.listdir(client)
     otherPartyMessages = os.listdir(otherParty)
-    clientMessages = [client + '/' + clientMessage for clientMessage in clientMessages ]
-    otherPartyMessages = [otherParty + '/' + otherPartyMessage for otherPartyMessage in otherPartyMessages ]
+    clientMessages = [client + '/' + clientMessage for clientMessage in clientMessages if '.txt' in clientMessage]
+    otherPartyMessages = [otherParty + '/' + otherPartyMessage for otherPartyMessage in otherPartyMessages if '.txt' in otherPartyMessage]
     for clientMessage in clientMessages:
         with open(clientMessage) as f1:
             message1 = {}
@@ -12,26 +12,27 @@ def insertDb(client, otherParty):
             message1['56'] = [None, None]
             message1['57A'] = [None, None] 
             message1['58'] = [None, None]
-            numb = 0 
+            passed = False 
             for line in f1.readlines()[1:-1]:
-                numb += 1
+                if line.strip().rsplit(":")[1] == '32B':
+                    passed = True
                 if line.strip().rsplit(":")[1] == '57A':
-                    if numb < 16:
+                    if not passed:
                         message1[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
                     else:
                         message1[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
                 elif line.strip().rsplit(":")[1] == '53':
-                    if numb < 14:
+                    if not passed:
                         message1[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
                     else:
                         message1[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
                 elif line.strip().rsplit(":")[1] == '58':
-                    if numb < 17:
+                    if not passed:
                         message1[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
                     else:
                         message1[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
                 elif line.strip().rsplit(":")[1] == '56':
-                    if numb < 15:
+                    if not passed:
                         message1[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
                     else:
                         message1[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
@@ -44,31 +45,34 @@ def insertDb(client, otherParty):
                     message2['56'] = [None, None]
                     message2['57A'] = [None, None] 
                     message2['58'] = [None, None]
-                    numb = 0 
+                    passed = False 
                     for line in f2.readlines()[1:-1]:
+                        if line.strip().rsplit(":")[1] == '32B':
+                            passed = True
                         if line.strip().rsplit(":")[1] == '57A':
-                            if numb < 16:
+                            if  not passed:
                                 message2[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
                             else:
                                 message2[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
                         elif line.strip().rsplit(":")[1] == '53':
-                            if numb < 14:
+                            if  not passed:
                                 message2[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
                             else:
                                 message2[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
                         elif line.strip().rsplit(":")[1] == '58':
-                            if numb < 17:
+                            if  not passed:
                                 message2[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
                             else:
                                 message2[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
                         elif line.strip().rsplit(":")[1] == '56':
-                            if numb < 15:
+                            if  not passed:
                                 message2[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
                             else:
                                 message2[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
                         else:    
                             message2[line.strip().rsplit(":")[1]] = line.strip().rsplit(":")[2]
                     matchingStatus = match(message1, message2)
+
 
 
 def match(message1, message2):
