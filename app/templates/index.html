@@ -20,17 +20,18 @@
             </div>
         </div>
     </nav>
-    <div id="tableApp" class="container">
+    <div id="tableApp" style="margin-top: 40px" class="container">
         <form>
-            <div class="form-group"><input v-model="date" class="form-control" type="date"></div>
+            <div class="form-group"><label>Trade Date</label><input v-model="tradeDate" class="form-control" type="date"></div>
+            <div class="form-group"><label>Settlement Date</label><input v-model="settlDate" class="form-control" type="date"></div>
             <div class="form-group"><input v-model="currency" class="form-control" type="number" placeholder=" Currency"></div>
             <div class="form-group">
-                <div class="form-check"><input v-model="picked" class="form-check-input" type="radio" name="match" id="UNMATCHED" value="UNMATCHED"><label class="form-check-label" for="formCheck-1">Unmatched</label></div>
+                <div class="form-check"><input v-model="picked" class="form-check-input" type="radio" name="match" id="UNMATCH" value="UNMATCH"><label class="form-check-label" for="formCheck-1">Unmatched</label></div>
                 <div class="form-check"><input v-model="picked" class="form-check-input" type="radio" name="match" id="CLOSEFIT" value="CLOSEFIT"><label class="form-check-label" for="formCheck-1">Closefit</label></div>
                 <div class="form-check"><input v-model="picked" class="form-check-input" type="radio" name="match" id="MATCHED" value="MATCHED"><label class="form-check-label" for="formCheck-1">Matched</label></div>
                 <div class="form-check"><input v-model="picked" class="form-check-input" type="radio" name="match" id="ALL" value=""><label class="form-check-label" for="formCheck-1">All</label></div>
             </div>
-            <div class="form-group"><input class="form-control" type="number" placeholder="Rate"></div>
+            <div class="form-group"><input v-model="rate" class="form-control" type="number" placeholder="Rate"></div>
             <div class="form-group"><button class="btn btn-primary" @click="handleSearch" type="button"><i class="fa fa-search"></i>&nbsp;SEARCH</button></div>
         </form>
         <div class="table-responsive">
@@ -47,7 +48,7 @@
                             <div role="tablist" id="accordion-1">
                                 <div class="card">
                                     <div class="card-header" role="tab">
-                                        <h5 class="mb-0"><a data-toggle="collapse" aria-expanded="true" aria-controls="accordion-1 .item-1" :class="[[ { 'text-danger' : row[3] == 'UNMATCH' }  , { 'text-success' : row[3] == 'MATCHED' } , { 'text-primary' : row[3] == 'CLOSEFIT' } ]]" href="div#accordion-1 .item-1">[[ row[0]['20'] + ' ' + row[3] ]]</a></h5>
+                                        <h5 class="mb-0"><a data-toggle="collapse" aria-expanded="true" aria-controls="accordion-1 .item-1" :class="[[ { 'text-danger' : row[3] == 'UNMATCH' }  , { 'text-success' : row[3] == 'MATCHED' } , { 'text-primary' : row[3] == 'CLOSEFIT' } , { 'text-muted' : row[3] == 'MERGED' } ]]" href="div#accordion-1 .item-1">[[ row[0]['20'] + ' ' + row[3] ]]</a></h5>
                                     </div>
                                     <div class="collapse item-1" role="tabpanel" data-parent="#accordion-1">
                                         <div class="card-body">
@@ -57,8 +58,8 @@
                                             <p :class="[[ row[2]['_24D'] ? 'text-success' : 'text-danger' ]]">24D [[ row[0]['24D'] ]]</p>
                                             <p :class="[[ row[2]['_30T'] ? 'text-success' : 'text-danger' ]]">30T [[ row[0]['30T'] ]]</p>
                                             <p :class="[[ row[2]['_30V'] ? 'text-success' : 'text-danger' ]]">30V [[ row[0]['30V'] ]]</p>
-                                            <p :class="[[ row[2]['_32B'] ? 'text-success' : 'text-danger' ]]">32B [[ row[0]['32B'] ]]</p>
-                                            <p :class="[[ row[2]['_33B'] ? 'text-success' : 'text-danger' ]]">33B [[ row[0]['33B'] ]]</p>
+                                            <p :class="[[ row[2]['_32B'][0] && row[2]['_32B'][1]  ? 'text-success' : 'text-danger' ]]">32B [[ row[0]['32B'] ]]</p>
+                                            <p :class="[[ row[2]['_33B'][0] && row[2]['_33B'][1] ? 'text-success' : 'text-danger' ]]">33B [[ row[0]['33B'] ]]</p>
                                             <p :class="[[ row[2]['_36'] ? 'text-success' : 'text-danger' ]]">36 [[ row[0]['36'] ]]</p>
                                             <p :class="[[ row[2]['_52A'] ? 'text-success' : 'text-danger' ]]">52A [[ row[0]['52A'] ]]</p>
                                             <p :class="[[ row[2]['_53'] ? 'text-success' : 'text-danger' ]]">53 [[ row[0]['53'] ]]</p>
@@ -90,8 +91,8 @@
                                                 <p :class="[[ row[2]['_24D'] ? 'text-success' : 'text-danger' ]]">24D [[ row[1]['24D'] ]]</p>
                                                 <p :class="[[ row[2]['_30T'] ? 'text-success' : 'text-danger' ]]">30T [[ row[1]['30T'] ]]</p>
                                                 <p :class="[[ row[2]['_30V'] ? 'text-success' : 'text-danger' ]]">30V [[ row[1]['30V'] ]]</p>
-                                                <p :class="[[ row[2]['_33B'] ? 'text-success' : 'text-danger' ]]">33B [[ row[1]['33B'] ]]</p>
-                                                <p :class="[[ row[2]['_32B'] ? 'text-success' : 'text-danger' ]]">32B [[ row[1]['32B'] ]]</p>
+                                                <p :class="[[ row[2]['_32B'][0] && row[2]['_33B'][1] ? 'text-success' : 'text-danger' ]]">33B [[ row[1]['33B'] ]]</p>
+                                                <p :class="[[ row[2]['_33B'][0] && row[2]['_32B'][1] ? 'text-success' : 'text-danger' ]]">32B [[ row[1]['32B'] ]]</p>
                                                 <p :class="[[ row[2]['_36'] ? 'text-success' : 'text-danger' ]]">36 [[ row[1]['36'] ]]</p>
                                                 <p :class="[[ row[2]['_52A'] ? 'text-success' : 'text-danger' ]]">52A [[ row[1]['52A'] ]]</p>
                                                 <p :class="[[ row[2]['_53'] ? 'text-success' : 'text-danger' ]]">53 [[ row[1]['53'] ]]</p>
@@ -103,7 +104,7 @@
                                                 <p :class="[[ row[2]['_56'] ? 'text-success' : 'text-danger' ]]">56 [[ row[1]['56'] ]]</p>
                                                 <p :class="[[ row[2]['_82'] ? 'text-success' : 'text-danger' ]]">82 [[ row[1]['82'] ]]</p>
                                                 <p :class="[[ row[2]['_87'] ? 'text-success' : 'text-danger' ]]">87 [[ row[1]['87'] ]]</p>
-                                                <button v-if="row[3] == 'CLOSEFIT'" class="btn btn-primary" type="button">Correct</button>
+                                                <button @click="merge(row[4]); row[3]='MERGED'" v-if="row[3] == 'CLOSEFIT'" class="btn btn-primary" type="button">Correct</button>
                                         </div>
                                     </div>
                                 </div>
@@ -112,6 +113,10 @@
                     </tr>
                 </tbody>
             </table>
+            <ul class="pagination">
+                    <li :class="[[ { 'disabled' : page <= 0 } ]]" class="page-item"><a @click="back" class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                    <li class="page-item"><a @click="next" class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                </ul>
         </div>
     </div>
     <script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>

@@ -3,9 +3,12 @@ var tableApp = new Vue({
   delimiters: ['[[',']]'],
   data: {
     rows: [],
-    date: "",
+    tradeDate: "",
+    settlDate: "",
     currency: "",
     picked: "",
+    rate: "",
+    page: 0
   },
     created: function(){
         $.getJSON( "/results", function( data ) {
@@ -17,11 +20,35 @@ var tableApp = new Vue({
     methods: {
       handleSearch: function(event){
         tableApp.rows = []
-        $.getJSON( "/results", { status : this.picked },function( data ) {
+        $.getJSON( "/results", { status : this.picked, trade: this.tradeDate, settl : this.settlDate, currency : this.currency , rate: this.rate},function( data ) {
           $.each( data, function( key, val ) {
             tableApp.rows.push( val);
           });
         });
+      },
+      next: function(){
+        this.page += 1
+        tableApp.rows = []
+        $.getJSON( "/results", { status : this.picked, trade: this.tradeDate, settl : this.settlDate, currency : this.currency , rate: this.rate, page: this.page},function( data ) {
+          $.each( data, function( key, val ) {
+            tableApp.rows.push( val);
+          });
+        });
+      },
+      back: function() {
+        if (this.page <= 0){
+          return
+        }
+        this.page -= 1
+        tableApp.rows = []
+        $.getJSON( "/results", { status : this.picked, trade: this.tradeDate, settl : this.settlDate, currency : this.currency , rate: this.rate, page: this.page},function( data ) {
+          $.each( data, function( key, val ) {
+            tableApp.rows.push( val);
+          });
+        });
+      },
+      merge: function(id){
+        $.getJSON( "/merge", { id : id},function( data ) {});
       }
     }
 })

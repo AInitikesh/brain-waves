@@ -5,90 +5,56 @@ def insertDb(client, otherParty):
     otherPartyMessages = os.listdir(otherParty)
     clientMessages = [client + '/' + clientMessage for clientMessage in clientMessages if '.txt' in clientMessage]
     otherPartyMessages = [otherParty + '/' + otherPartyMessage for otherPartyMessage in otherPartyMessages if '.txt' in otherPartyMessage]
-
+    
+    clientActualMessages = []
     for clientMessage in clientMessages:
-        with open(clientMessage) as f1:
-            message1 = {}
-            message1['53'] = [None, None]
-            message1['56'] = [None, None]
-            message1['57A'] = [None, None] 
-            message1['58'] = [None, None]
-            passed = False 
-            for line in f1.readlines()[1:-1]:
-                if line.strip().rsplit(":")[1] == '32B':
-                    passed = True
-                    curr = line.strip().rsplit(":")[2].split()[0]
-                    amm = float(line.strip().rsplit(":")[2].split()[1])
-                    message1[line.strip().rsplit(":")[1]] = [curr, amm]
-                elif line.strip().rsplit(":")[1] == '33B':
-                    curr = line.strip().rsplit(":")[2].split()[0]
-                    amm = float(line.strip().rsplit(":")[2].split()[1])
-                    message1[line.strip().rsplit(":")[1]] = [curr, amm]
-                elif line.strip().rsplit(":")[1] == '57A':
-                    if not passed:
-                        message1[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
-                    else:
-                        message1[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
-                elif line.strip().rsplit(":")[1] == '53':
-                    if not passed:
-                        message1[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
-                    else:
-                        message1[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
-                elif line.strip().rsplit(":")[1] == '58':
-                    if not passed:
-                        message1[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
-                    else:
-                        message1[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
-                elif line.strip().rsplit(":")[1] == '56':
-                    if not passed:
-                        message1[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
-                    else:
-                        message1[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
-                else:    
-                    message1[line.strip().rsplit(":")[1]] = line.strip().rsplit(":")[2]
-            for otherPartyMessage in otherPartyMessages:
-                with open(otherPartyMessage) as f2:
-                    message2 =  {}
-                    message2['53'] = [None, None]
-                    message2['56'] = [None, None]
-                    message2['57A'] = [None, None] 
-                    message2['58'] = [None, None]
-                    passed = False 
-                    for line in f2.readlines()[1:-1]:
-                        if line.strip().rsplit(":")[1] == '32B':
-                            passed = True
-                            curr = line.strip().rsplit(":")[2].split()[0]
-                            amm = float(line.strip().rsplit(":")[2].split()[1])
-                            message2[line.strip().rsplit(":")[1]] = [curr, amm]
-                        elif line.strip().rsplit(":")[1] == '33B':
-                            curr = line.strip().rsplit(":")[2].split()[0]
-                            amm = float(line.strip().rsplit(":")[2].split()[1])
-                            message2[line.strip().rsplit(":")[1]] = [curr, amm]
-                        elif line.strip().rsplit(":")[1] == '57A':
-                            if  not passed:
-                                message2[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
-                            else:
-                                message2[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
-                        elif line.strip().rsplit(":")[1] == '53':
-                            if  not passed:
-                                message2[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
-                            else:
-                                message2[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
-                        elif line.strip().rsplit(":")[1] == '58':
-                            if  not passed:
-                                message2[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
-                            else:
-                                message2[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
-                        elif line.strip().rsplit(":")[1] == '56':
-                            if  not passed:
-                                message2[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
-                            else:
-                                message2[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
-                        else:    
-                            message2[line.strip().rsplit(":")[1]] = line.strip().rsplit(":")[2]
-                    matchingStatus = match(message1, message2)
+        clientActualMessages.append(processMessages(clientMessage))
+    otherPartyActualMessages = []
+    for otherPartyMessage in otherPartyMessages:
+        otherPartyActualMessages.append(processMessages(otherPartyMessage))
+    final_results = []
+    index = 0
+    for clientMessage in clientActualMessages:
+        for otherPartyMessage in otherPartyActualMessages:
+            matchResult = match(clientMessage, otherPartyMessage)
+            decision = matchingOnStatus(matchResult)
+            final_results.append([clientMessage, otherPartyMessage, matchResult, decision, index])
+            index += 1
+    return final_results
 
 
+
+def processMessages(clientMessage):
+    with open(clientMessage) as f1:
+        message1 = {}
+        message1['53'] = [None, None]
+        message1['56'] = [None, None]
+        message1['57A'] = [None, None] 
+        message1['57D'] = [None, None] 
+        message1['58'] = [None, None]
+        passed = False 
+        for line in f1.readlines()[1:-1]:
+            if line.strip().rsplit(":")[1] == '32B':
+                passed = True
+                curr = line.strip().rsplit(":")[2].split()[0]
+                amm = float(line.strip().rsplit(":")[2].split()[1])
+                message1[line.strip().rsplit(":")[1]] = [curr, amm]
+            elif line.strip().rsplit(":")[1] == '33B':
+                curr = line.strip().rsplit(":")[2].split()[0]
+                amm = float(line.strip().rsplit(":")[2].split()[1])
+                message1[line.strip().rsplit(":")[1]] = [curr, amm]
+            elif (line.strip().rsplit(":")[1] == '57A' or 
+                line.strip().rsplit(":")[1] == '57D' or 
+                line.strip().rsplit(":")[1] == '53' or 
+                line.strip().rsplit(":")[1] == '58' or 
+                line.strip().rsplit(":")[1] == '56'):
+                if not passed:
+                    message1[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
+                else:
+                    message1[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
+            else:    
+                message1[line.strip().rsplit(":")[1]] = line.strip().rsplit(":")[2]
+    return message1
 
 def match(message1, message2):
     matchingStatus = {}
@@ -107,14 +73,26 @@ def match(message1, message2):
 
 
     matchingStatus["_94A"] = False
+    if '94A' not in message1:
+        message1['94A'] = None
+    if '94A' not in message2:
+        message2['94A'] = None
     if message1['94A'] == message2['94A']:
         matchingStatus["_94A"] = True
     
     matchingStatus["_82"] = False
+    if '82' not in message1:
+        message1['82'] = None
+    if '87' not in message2:
+        message2['87'] = None
     if message1['82'] == message2['87']:
         matchingStatus["_82"] = True
 
     matchingStatus["_87"] = False
+    if '87' not in message1:
+        message1['87'] = None
+    if '82' not in message2:
+        message2['82'] = None
     if message1['87'] == message2['82']:
         matchingStatus["_87"] = True
 
@@ -122,10 +100,6 @@ def match(message1, message2):
     if message1['77H'] == message2['77H']:
         matchingStatus["_77H"] = True
 
-
-    matchingStatus["_30T"] = False
-    if message1['30T'] == message2['30T']:
-        matchingStatus["_30T"] = True
 
     matchingStatus["_30T"] = False
     if message1['30T'] == message2['30T']:
@@ -161,10 +135,16 @@ def match(message1, message2):
         matchingStatus["_56"][1] = True
 
     matchingStatus["_57A"] = [False, False]
-    if message1['57A'][0] == message2['57A'][1]:
+    if message1['57A'][0] == message2['57D'][1]:
         matchingStatus["_57A"][0] = True
-    if message1['57A'][1] == message2['57A'][0]:
+    if message1['57A'][1] == message2['57D'][0]:
         matchingStatus["_57A"][1] = True
+
+    matchingStatus["_57D"] = [False, False]
+    if message1['57D'][0] == message2['57A'][1]:
+        matchingStatus["_57D"][0] = True
+    if message1['57D'][1] == message2['57A'][0]:
+        matchingStatus["_57D"][1] = True
 
 
     matchingStatus["_58"] = [False,False]
@@ -188,5 +168,27 @@ def match(message1, message2):
     
     return matchingStatus
 
+def matchingOnStatus(matchingStatus):
+    if (matchingStatus['_82'] == True and 
+        matchingStatus['_87'] == True and 
+        matchingStatus['_77H'] == True and 
+        matchingStatus['_30T'] == True and 
+        matchingStatus['_30V'] == True and 
+        matchingStatus['_36'] == True and 
+        matchingStatus['_32B'] == [True,True] and 
+        matchingStatus['_56'] == [True, True] and 
+        # matchingStatus['_57A'] == [True, True] and 
+        # matchingStatus['_57D'] == [True, True] and 
+        matchingStatus['_58'] == [True, True] and 
+         matchingStatus['_33B'] == [True, True] ) :
+        return "MATCHED"
+    elif (matchingStatus['_30V'] == True and 
+        matchingStatus['_36'] == True and 
+        matchingStatus['_32B'] == [True,True] and 
+        matchingStatus['_33B'] == [True, True] and
+        matchingStatus['_30V'] == True):
+        
+        return "CLOSEFIT"
+    else:
+        return "UNMATCH"
     
-
