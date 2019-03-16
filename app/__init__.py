@@ -49,7 +49,7 @@ def index():
     
     return_data = final_data
     if status != None and status != "":
-        return_data=[data for data in final_data if data[3] == status]
+        return_data=[data for data in final_data if data[3] == status or data[3] == "MERGED"]
     
     if tradeDate != None and tradeDate != "":
         dateSplit = tradeDate.split('-')

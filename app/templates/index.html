@@ -81,7 +81,7 @@
                             <div role="tablist" id="accordion-1">
                                 <div class="card">
                                     <div class="card-header" role="tab">
-                                        <h5 class="mb-0"><a data-toggle="collapse" aria-expanded="true" aria-controls="accordion-1 .item-1" :class="[[ { 'text-danger' : row[3] == 'UNMATCH' }  , { 'text-success' : row[3] == 'MATCHED' } , { 'text-primary' : row[3] == 'CLOSEFIT' } ]]" href="div#accordion-1 .item-1">[[ row[1]['20'] + ' ' + row[3] ]]</a></h5>
+                                        <h5 class="mb-0"><a data-toggle="collapse" aria-expanded="true" aria-controls="accordion-1 .item-1" :class="[[ { 'text-danger' : row[3] == 'UNMATCH' }  , { 'text-success' : row[3] == 'MATCHED' } , { 'text-primary' : row[3] == 'CLOSEFIT' } , { 'text-muted' : row[3] == 'MERGED' } ]]" href="div#accordion-1 .item-1">[[ row[1]['20'] + ' ' + row[3] ]]</a></h5>
                                     </div>
                                     <div class="collapse item-1" role="tabpanel" data-parent="#accordion-1">
                                         <div class="card-body">
@@ -104,7 +104,7 @@
                                                 <p :class="[[ row[2]['_56'] ? 'text-success' : 'text-danger' ]]">56 [[ row[1]['56'] ]]</p>
                                                 <p :class="[[ row[2]['_82'] ? 'text-success' : 'text-danger' ]]">82 [[ row[1]['82'] ]]</p>
                                                 <p :class="[[ row[2]['_87'] ? 'text-success' : 'text-danger' ]]">87 [[ row[1]['87'] ]]</p>
-                                                <button @click="merge(row[4]); row[3]='MERGED'" v-if="row[3] == 'CLOSEFIT'" class="btn btn-primary" type="button">Correct</button>
+                                                <button @click="merge(row[4]); row[3]='MERGED'" v-if="row[3] == 'CLOSEFIT'" class="btn btn-warning" type="button">Force Match</button>
                                         </div>
                                     </div>
                                 </div>

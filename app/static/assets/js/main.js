@@ -49,6 +49,12 @@ var tableApp = new Vue({
       },
       merge: function(id){
         $.getJSON( "/merge", { id : id},function( data ) {});
+        tableApp.rows = []
+        $.getJSON( "/results", { status : this.picked, trade: this.tradeDate, settl : this.settlDate, currency : this.currency , rate: this.rate, page: this.page},function( data ) {
+          $.each( data, function( key, val ) {
+            tableApp.rows.push( val);
+          });
+        });
       }
     }
 })
