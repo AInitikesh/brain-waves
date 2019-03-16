@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>socgen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/fonts/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}">
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md">
+        <div class="container-fluid"><a class="navbar-brand" href="#">SOC GEN</a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse"
+                id="navcol-1">
+                <ul class="nav navbar-nav"></ul>
+            </div>
+        </div>
+    </nav>
+    <div id="tableApp" class="container">
+        <form>
+            <div class="form-group"><input v-model="date" class="form-control" type="date"></div>
+            <div class="form-group"><input v-model="currency" class="form-control" type="number" placeholder=" Currency"></div>
+            <div class="form-group">
+                <div class="form-check"><input v-model="picked" class="form-check-input" type="radio" name="match" id="UNMATCHED" value="UNMATCHED"><label class="form-check-label" for="formCheck-1">Unmatched</label></div>
+                <div class="form-check"><input v-model="picked" class="form-check-input" type="radio" name="match" id="CLOSEFIT" value="CLOSEFIT"><label class="form-check-label" for="formCheck-1">Closefit</label></div>
+                <div class="form-check"><input v-model="picked" class="form-check-input" type="radio" name="match" id="MATCHED" value="MATCHED"><label class="form-check-label" for="formCheck-1">Matched</label></div>
+                <div class="form-check"><input v-model="picked" class="form-check-input" type="radio" name="match" id="ALL" value=""><label class="form-check-label" for="formCheck-1">All</label></div>
+            </div>
+            <div class="form-group"><input class="form-control" type="number" placeholder="Rate"></div>
+            <div class="form-group"><button class="btn btn-primary" @click="handleSearch" type="button"><i class="fa fa-search"></i>&nbsp;SEARCH</button></div>
+        </form>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>ThirdParty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="row in rows">
+                        <td>
+                            <div role="tablist" id="accordion-1">
+                                <div class="card">
+                                    <div class="card-header" role="tab">
+                                        <h5 class="mb-0"><a data-toggle="collapse" aria-expanded="true" aria-controls="accordion-1 .item-1" :class="[[ { 'text-danger' : row[3] == 'UNMATCH' }  , { 'text-success' : row[3] == 'MATCHED' } , { 'text-primary' : row[3] == 'CLOSEFIT' } ]]" href="div#accordion-1 .item-1">[[ row[0]['20'] + ' ' + row[3] ]]</a></h5>
+                                    </div>
+                                    <div class="collapse item-1" role="tabpanel" data-parent="#accordion-1">
+                                        <div class="card-body">
+                                            <p class="text-primary">20 [[ row[0]['20'] ]]</p>
+                                            <p :class="[[ row[2]['_22A'] ? 'text-success' : 'text-danger' ]]">22A [[ row[0]['22A'] ]]</p>
+                                            <p :class="[[ row[2]['_22C'] ? 'text-success' : 'text-danger' ]]">22C [[ row[0]['22C'] ]]</p>
+                                            <p :class="[[ row[2]['_24D'] ? 'text-success' : 'text-danger' ]]">24D [[ row[0]['24D'] ]]</p>
+                                            <p :class="[[ row[2]['_30T'] ? 'text-success' : 'text-danger' ]]">30T [[ row[0]['30T'] ]]</p>
+                                            <p :class="[[ row[2]['_30V'] ? 'text-success' : 'text-danger' ]]">30V [[ row[0]['30V'] ]]</p>
+                                            <p :class="[[ row[2]['_32B'] ? 'text-success' : 'text-danger' ]]">32B [[ row[0]['32B'] ]]</p>
+                                            <p :class="[[ row[2]['_33B'] ? 'text-success' : 'text-danger' ]]">33B [[ row[0]['33B'] ]]</p>
+                                            <p :class="[[ row[2]['_36'] ? 'text-success' : 'text-danger' ]]">36 [[ row[0]['36'] ]]</p>
+                                            <p :class="[[ row[2]['_52A'] ? 'text-success' : 'text-danger' ]]">52A [[ row[0]['52A'] ]]</p>
+                                            <p :class="[[ row[2]['_53'] ? 'text-success' : 'text-danger' ]]">53 [[ row[0]['53'] ]]</p>
+                                            <p :class="[[ row[2]['_53A'] ? 'text-success' : 'text-danger' ]]">53A [[ row[0]['53A'] ]]</p>
+                                            <p :class="[[ row[2]['_57A'] ? 'text-success' : 'text-danger' ]]">57A [[ row[0]['57A'] ]]</p>
+                                            <p :class="[[ row[2]['_57D'] ? 'text-success' : 'text-danger' ]]">57D [[ row[0]['57D'] ]]</p>
+                                            <p :class="[[ row[2]['_58'] ? 'text-success' : 'text-danger' ]]">58 [[ row[0]['58'] ]]</p>
+                                            <p :class="[[ row[2]['_56'] ? 'text-success' : 'text-danger' ]]">56 [[ row[0]['56'] ]]</p>
+                                            <p :class="[[ row[2]['_58'] ? 'text-success' : 'text-danger' ]]">58 [[ row[0]['58'] ]]</p>
+                                            <p :class="[[ row[2]['_82'] ? 'text-success' : 'text-danger' ]]">82 [[ row[0]['82'] ]]</p>
+                                            <p :class="[[ row[2]['_87'] ? 'text-success' : 'text-danger' ]]">87 [[ row[0]['87'] ]]</p>
+                                            <button v-if="row[3] == 'CLOSEFIT'" class="btn btn-primary invisible" type="button">Correct</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div role="tablist" id="accordion-1">
+                                <div class="card">
+                                    <div class="card-header" role="tab">
+                                        <h5 class="mb-0"><a data-toggle="collapse" aria-expanded="true" aria-controls="accordion-1 .item-1" :class="[[ { 'text-danger' : row[3] == 'UNMATCH' }  , { 'text-success' : row[3] == 'MATCHED' } , { 'text-primary' : row[3] == 'CLOSEFIT' } ]]" href="div#accordion-1 .item-1">[[ row[1]['20'] + ' ' + row[3] ]]</a></h5>
+                                    </div>
+                                    <div class="collapse item-1" role="tabpanel" data-parent="#accordion-1">
+                                        <div class="card-body">
+                                                <p class="text-primary">20 [[ row[1]['20'] ]]</p>
+                                                <p :class="[[ row[2]['_22A'] ? 'text-success' : 'text-danger' ]]">22A [[ row[1]['22A'] ]]</p>
+                                                <p :class="[[ row[2]['_22C'] ? 'text-success' : 'text-danger' ]]">22C [[ row[1]['22C'] ]]</p>
+                                                <p :class="[[ row[2]['_24D'] ? 'text-success' : 'text-danger' ]]">24D [[ row[1]['24D'] ]]</p>
+                                                <p :class="[[ row[2]['_30T'] ? 'text-success' : 'text-danger' ]]">30T [[ row[1]['30T'] ]]</p>
+                                                <p :class="[[ row[2]['_30V'] ? 'text-success' : 'text-danger' ]]">30V [[ row[1]['30V'] ]]</p>
+                                                <p :class="[[ row[2]['_33B'] ? 'text-success' : 'text-danger' ]]">33B [[ row[1]['33B'] ]]</p>
+                                                <p :class="[[ row[2]['_32B'] ? 'text-success' : 'text-danger' ]]">32B [[ row[1]['32B'] ]]</p>
+                                                <p :class="[[ row[2]['_36'] ? 'text-success' : 'text-danger' ]]">36 [[ row[1]['36'] ]]</p>
+                                                <p :class="[[ row[2]['_52A'] ? 'text-success' : 'text-danger' ]]">52A [[ row[1]['52A'] ]]</p>
+                                                <p :class="[[ row[2]['_53'] ? 'text-success' : 'text-danger' ]]">53 [[ row[1]['53'] ]]</p>
+                                                <p :class="[[ row[2]['_53A'] ? 'text-success' : 'text-danger' ]]">53A [[ row[1]['53A'] ]]</p>
+                                                <p :class="[[ row[2]['_57D'] ? 'text-success' : 'text-danger' ]]">57D [[ row[1]['57D'] ]]</p>
+                                                <p :class="[[ row[2]['_57A'] ? 'text-success' : 'text-danger' ]]">57A [[ row[1]['57A'] ]]</p>
+                                                <p :class="[[ row[2]['_58'] ? 'text-success' : 'text-danger' ]]">58 [[ row[1]['58'] ]]</p>
+                                                <p :class="[[ row[2]['_82'] ? 'text-success' : 'text-danger' ]]">82 [[ row[1]['58A'] ]]</p>
+                                                <p :class="[[ row[2]['_56'] ? 'text-success' : 'text-danger' ]]">56 [[ row[1]['56'] ]]</p>
+                                                <p :class="[[ row[2]['_82'] ? 'text-success' : 'text-danger' ]]">82 [[ row[1]['82'] ]]</p>
+                                                <p :class="[[ row[2]['_87'] ? 'text-success' : 'text-danger' ]]">87 [[ row[1]['87'] ]]</p>
+                                                <button v-if="row[3] == 'CLOSEFIT'" class="btn btn-primary" type="button">Correct</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+</body>
+
+</html>
