@@ -15,11 +15,32 @@ def insertDb(client, otherParty):
     final_results = []
     index = 0
     for clientMessage in clientActualMessages:
-        for otherPartyMessage in otherPartyActualMessages:
-            matchResult = match(clientMessage, otherPartyMessage)
+        closeMatch = None
+        perfectMatch = None
+        imperfectMatch = None
+        closeMatchResult = None
+        perfectMatchResult= None
+        imperfectmatchResult = None
+        for i in range(len(otherPartyActualMessages)):
+            matchResult = match(clientMessage, otherPartyActualMessages[i])
             decision = matchingOnStatus(matchResult)
-            final_results.append([clientMessage, otherPartyMessage, matchResult, decision, index])
-            index += 1
+            if decision == "MATCHED":
+                perfectMatch = otherPartyActualMessages[i]
+                perfectMatchResult = matchResult
+                break
+            if decision == "CLOSEFIT":
+                closeMatch = otherPartyActualMessages[i]
+                closeMatchResult = matchResult
+            if (i == len(otherPartyActualMessages) - 1):
+                imperfectMatch = otherPartyActualMessages[i]
+                imperfectmatchResult = matchResult
+        if perfectMatch != None:
+            final_results.append([clientMessage, perfectMatch, perfectMatchResult, decision, index])
+        elif closeMatch != None:
+            final_results.append([clientMessage, closeMatch, closeMatchResult, decision, index])
+        else:
+            final_results.append([clientMessage, imperfectMatch, imperfectmatchResult, decision, index])
+        index += 1
     return final_results
 
 
@@ -32,8 +53,9 @@ def processMessages(clientMessage):
         message1['57A'] = [None, None] 
         message1['57D'] = [None, None] 
         message1['58'] = [None, None]
-        passed = False 
-        for line in f1.readlines()[1:-1]:
+        passed = False
+        lines = [line for line in f1.readlines() if line.startswith(":")]
+        for line in lines:
             if line.strip().rsplit(":")[1] == '32B':
                 passed = True
                 curr = line.strip().rsplit(":")[2].split()[0]
@@ -52,13 +74,17 @@ def processMessages(clientMessage):
                     message1[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
                 else:
                     message1[line.strip().rsplit(":")[1]][1] = line.strip().rsplit(":")[2]
-            else:    
+            else:
                 message1[line.strip().rsplit(":")[1]] = line.strip().rsplit(":")[2]
     return message1
 
 def match(message1, message2):
     matchingStatus = {}
     matchingStatus["_20"] = False
+    if '20' not in message1:
+        message1['20'] = None
+    if '20' not in message2:
+        message2['20'] = None
     if message1['20'] == message2['20']:
         matchingStatus["_20"] = True
 
@@ -187,7 +213,6 @@ def matchingOnStatus(matchingStatus):
         matchingStatus['_32B'] == [True,True] and 
         matchingStatus['_33B'] == [True, True] and
         matchingStatus['_30V'] == True):
-        
         return "CLOSEFIT"
     else:
         return "UNMATCH"
