@@ -5,6 +5,7 @@ def insertDb(client, otherParty):
     otherPartyMessages = os.listdir(otherParty)
     clientMessages = [client + '/' + clientMessage for clientMessage in clientMessages if '.txt' in clientMessage]
     otherPartyMessages = [otherParty + '/' + otherPartyMessage for otherPartyMessage in otherPartyMessages if '.txt' in otherPartyMessage]
+
     for clientMessage in clientMessages:
         with open(clientMessage) as f1:
             message1 = {}
@@ -16,7 +17,14 @@ def insertDb(client, otherParty):
             for line in f1.readlines()[1:-1]:
                 if line.strip().rsplit(":")[1] == '32B':
                     passed = True
-                if line.strip().rsplit(":")[1] == '57A':
+                    curr = line.strip().rsplit(":")[2].split()[0]
+                    amm = float(line.strip().rsplit(":")[2].split()[1])
+                    message1[line.strip().rsplit(":")[1]] = [curr, amm]
+                elif line.strip().rsplit(":")[1] == '33B':
+                    curr = line.strip().rsplit(":")[2].split()[0]
+                    amm = float(line.strip().rsplit(":")[2].split()[1])
+                    message1[line.strip().rsplit(":")[1]] = [curr, amm]
+                elif line.strip().rsplit(":")[1] == '57A':
                     if not passed:
                         message1[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
                     else:
@@ -49,7 +57,14 @@ def insertDb(client, otherParty):
                     for line in f2.readlines()[1:-1]:
                         if line.strip().rsplit(":")[1] == '32B':
                             passed = True
-                        if line.strip().rsplit(":")[1] == '57A':
+                            curr = line.strip().rsplit(":")[2].split()[0]
+                            amm = float(line.strip().rsplit(":")[2].split()[1])
+                            message2[line.strip().rsplit(":")[1]] = [curr, amm]
+                        elif line.strip().rsplit(":")[1] == '33B':
+                            curr = line.strip().rsplit(":")[2].split()[0]
+                            amm = float(line.strip().rsplit(":")[2].split()[1])
+                            message2[line.strip().rsplit(":")[1]] = [curr, amm]
+                        elif line.strip().rsplit(":")[1] == '57A':
                             if  not passed:
                                 message2[line.strip().rsplit(":")[1]][0] = line.strip().rsplit(":")[2]
                             else:
@@ -125,9 +140,11 @@ def match(message1, message2):
         matchingStatus["_36"] = True
 
 
-    matchingStatus["_33B"] = False
-    if message1['33B'] == message2['32B']:
-        matchingStatus["_33B"] = True
+    matchingStatus["_33B"] = [False,False]
+    if message1['33B'][0] == message2['32B'][0]:
+        matchingStatus["_33B"][0] = True
+    if message1['33B'][1] == message2['32B'][1]:
+        matchingStatus["_33B"][1] = True
 
     matchingStatus["_53"] = False
     if '53' not in message1:
@@ -156,9 +173,11 @@ def match(message1, message2):
     if message1['58'][1] == message2['58'][0]:
         matchingStatus["_58"][1] = True
 
-    matchingStatus["_32B"] = False
-    if message1['32B'] == message2['33B']:
-        matchingStatus["_32B"] = True
+    matchingStatus["_32B"] = [False, False]
+    if message1['32B'][0] == message2['33B'][0]:
+        matchingStatus["_32B"][0] = True
+    if message1['32B'][1] == message2['33B'][1]:
+        matchingStatus["_32B"][1] = True
 
 
     matchingStatus["_53"] = [False,False]
